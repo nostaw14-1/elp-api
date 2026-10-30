@@ -1,7 +1,7 @@
 package com.elpdeliveries.api.service;
 
-import com.elpdeliveries.api.dto.GeocodeDto;
 import com.elpdeliveries.api.entity.Delivery;
+import com.elpdeliveries.api.entity.DeliveryView;
 import com.elpdeliveries.api.repository.DeliveryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -77,6 +77,7 @@ public class DeliveryService {
     }
 
     public List<Delivery> searchDeliveries(
+            DeliveryView view,
             LocalDate dlvDate,
             String firstName,
             String surname,
@@ -84,6 +85,7 @@ public class DeliveryService {
             Boolean completed
     ) {
        Specification<Delivery> spec = Specification.allOf(
+               hasView(view),
                hasDlvDate(dlvDate),
                hasFirstName(firstName),
                hasLastName(surname),

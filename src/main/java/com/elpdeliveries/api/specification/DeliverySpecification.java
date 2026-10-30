@@ -1,6 +1,7 @@
 package com.elpdeliveries.api.specification;
 
 import com.elpdeliveries.api.entity.Delivery;
+import com.elpdeliveries.api.entity.DeliveryView;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
@@ -17,7 +18,7 @@ public class DeliverySpecification {
                 (firstName == null || firstName.isBlank())
                         ? null
                         : cb.like(
-                        cb.lower(root.get("firstName")),
+                        cb.lower(root.get("fname")),
                         "%" + firstName.toLowerCase() + "%"
                 );
     }
@@ -27,7 +28,7 @@ public class DeliverySpecification {
                 (lastName == null || lastName.isBlank())
                         ? null
                         : cb.like(
-                        cb.lower(root.get("lastName")),
+                        cb.lower(root.get("lname")),
                         "%" + lastName.toLowerCase() + "%"
                 );
     }
@@ -44,5 +45,19 @@ public class DeliverySpecification {
                 completed == null
                         ? null
                         : cb.equal(root.get("completed"), completed));
+    }
+
+    public static Specification<Delivery> hasView(DeliveryView view) {
+        return (root, query, cb) -> {
+            if (view == null) {
+                return null;
+            }
+            return switch (view) {
+                case ALL -> null;
+                case TODAY -> cb.equal(root.get("dlvDate"), LocalDate.now());
+                case FUTURE -> cb.greaterThan(root.get("dlvDate"), LocalDate.now());
+                case ROUTED -> cb.isNotNull(root.get("routeOrder"));
+            };
+        };
     }
 }

@@ -1,6 +1,7 @@
 package com.elpdeliveries.api.controller;
 
 import com.elpdeliveries.api.entity.Delivery;
+import com.elpdeliveries.api.entity.DeliveryView;
 import com.elpdeliveries.api.service.DeliveryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +44,7 @@ public class DeliveryController {
 
     @GetMapping("/search")
     public List<Delivery> searchDeliveries(
+            @RequestParam(required = false) DeliveryView view,
             @RequestParam(required = false) LocalDate dlvDate,
             @RequestParam(required = false) String firstName,
             @RequestParam(required = false) String lastName,
@@ -50,6 +52,7 @@ public class DeliveryController {
             @RequestParam(required = false) Boolean completed) {
 
         return service.searchDeliveries(
+                view,
                 dlvDate,
                 firstName,
                 lastName,
