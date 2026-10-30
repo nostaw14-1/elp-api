@@ -18,12 +18,8 @@ public class RouteController {
     private final NominatimGeocodingService geocoder;
 
     @PostMapping("/routes/generate")
-    public ResponseEntity<List<Integer>> generateRoute(@RequestBody RouteRequest request) {
-        try {
+    public ResponseEntity<List<Integer>> generateRoute(@RequestBody RouteRequest request) throws Exception{
             return ResponseEntity.ok(routeService.generateRoute(request.getDeliveryIds()));
-        } catch (Exception e) {
-            return ResponseEntity.noContent().build();
-        }
     }
 
     @PostMapping("/geocode")
