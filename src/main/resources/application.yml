@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: elp-api
+
+  datasource:
+    jdbc-url: jdbc:mysql://192.168.0.2:3306/elpdeliveries
+    username: ${USERNAME}
+    password: ${PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+  logging:
+    level:
+      org.springframework.boot.autoconfigure: DEBUG
+
+
+server:
+   port: 1924
+
+routing:
+  url: http://192.168.0.2:3000
+  latitude: ${DEPOT_LAT}
+  longitude: ${DEPOT_LONG}
+
+zdb:
+  jdbc-url: jdbc:sqlserver://${PATIENT_IP};databaseName=APSS;encrypt=true;trustServerCertificate=true;
+  username: ${PATIENT_USERNAME}
+  password: ${PATIENT_PASSWORD}
+  driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+webstercare:
+  jdbc-url: jdbc:sqlserver://${PATIENT_IP}:50526;databaseName=WEBSTERCARE;encrypt=true;trustServerCertificate=true;
+  username: ${PATIENT_USERNAME}
+  password: ${PATIENT_PASSWORD}
+  driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+
