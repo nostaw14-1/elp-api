@@ -42,7 +42,7 @@ public class NominatimGeocodingService {
             JsonNode result = root.get(0);
             Double latitude = result.get("lat").asDouble();
             Double longitude = result.get("lon").asDouble();
-            return new GeocodeDto(latitude, longitude);
+            return new GeocodeDto(longitude, latitude);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
