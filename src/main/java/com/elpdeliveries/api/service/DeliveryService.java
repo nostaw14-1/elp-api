@@ -1,5 +1,6 @@
 package com.elpdeliveries.api.service;
 
+import com.elpdeliveries.api.dto.DeliveryStats;
 import com.elpdeliveries.api.entity.Delivery;
 import com.elpdeliveries.api.entity.DeliveryView;
 import com.elpdeliveries.api.repository.DeliveryRepository;
@@ -97,6 +98,13 @@ public class DeliveryService {
 
     public void updateIncludedInRoute(Integer id, Boolean included) {
         repository.updateIncludedInRoute(id, included);
+    }
+
+    public DeliveryStats getDeliveryStats() {
+        return new DeliveryStats(
+             repository.countByDlvDate(LocalDate.now()),
+             repository.countByCompletedFalse()
+        );
     }
 
 

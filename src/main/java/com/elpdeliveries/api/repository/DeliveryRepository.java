@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+
 @Repository
 public interface DeliveryRepository extends JpaRepository<Delivery, Integer>, JpaSpecificationExecutor<Delivery> {
     @Modifying
@@ -27,4 +29,7 @@ public interface DeliveryRepository extends JpaRepository<Delivery, Integer>, Jp
             @Param("id") Integer id,
             @Param("included") Boolean included
     );
+
+    long countByDlvDate(LocalDate dlvDate);
+    long countByCompletedFalse();
 }

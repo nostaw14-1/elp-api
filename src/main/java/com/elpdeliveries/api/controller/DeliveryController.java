@@ -1,5 +1,6 @@
 package com.elpdeliveries.api.controller;
 
+import com.elpdeliveries.api.dto.DeliveryStats;
 import com.elpdeliveries.api.entity.Delivery;
 import com.elpdeliveries.api.entity.DeliveryView;
 import com.elpdeliveries.api.service.DeliveryService;
@@ -65,5 +66,10 @@ public class DeliveryController {
     public ResponseEntity<Void> updateIncludedInRoute(@PathVariable Integer id, @RequestParam Boolean included) {
         service.updateIncludedInRoute(id, included);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<DeliveryStats> getDeliveryStats() {
+        return ResponseEntity.ok(service.getDeliveryStats());
     }
 }
