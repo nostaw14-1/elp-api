@@ -95,5 +95,9 @@ public class DeliveryService {
        return repository.findAll(spec);
     }
 
+    public void updateIncludedInRoute(Integer id, Boolean included) {
+        repository.updateIncludedInRoute(id, included);
+    }
+
 
 }

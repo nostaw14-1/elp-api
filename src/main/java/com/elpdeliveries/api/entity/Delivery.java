@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -15,8 +16,8 @@ public class Delivery {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(name = "created_date", nullable = false, updatable = false)
-    private LocalDateTime createdDate;
-    private Date dlvDate;
+    private LocalDate createdDate;
+    private LocalDate dlvDate;
     private String fname;
     private String lname;
     private String phnum;
@@ -27,10 +28,15 @@ public class Delivery {
     private String photo;
     private Boolean completed;
     private String completedBy;
-    private Date completedDate;
+    private LocalDate completedDate;
     private Boolean handedToCustomer;
     private Double latitude;
     private Double longitude;
     private Integer routeOrder;
     private Boolean includedInRoute;
+
+    @PrePersist
+    private void prePersist() {
+        createdDate = LocalDate.now();
+    }
 }

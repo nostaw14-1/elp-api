@@ -60,4 +60,10 @@ public class DeliveryController {
                 completed
         );
     }
+
+    @PatchMapping("/{id}/included-in-route")
+    public ResponseEntity<Void> updateIncludedInRoute(@PathVariable Integer id, @RequestParam Boolean included) {
+        service.updateIncludedInRoute(id, included);
+        return ResponseEntity.noContent().build();
+    }
 }
