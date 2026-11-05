@@ -3,9 +3,7 @@ package com.elpdeliveries.api.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.sql.Date;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -24,7 +22,7 @@ public class Delivery {
     private String homePhone;
     private String addr;
     private String notes;
-    private Integer receiptId;
+    private String receiptId;
     private String photo;
     private Boolean completed;
     private String completedBy;
