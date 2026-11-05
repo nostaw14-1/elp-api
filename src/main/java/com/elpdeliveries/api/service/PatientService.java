@@ -10,7 +10,7 @@ public class PatientService {
     private final ZPatientService zPatientService;
     private final WebsterPatientService websterPatientService;
 
-    public PatientLookupDto getReceipt(String receiptId) {
+    public PatientLookupDto getReceipt(String receiptId) throws Exception {
         PatientLookupDto patient = zPatientService.getReceipt(receiptId);
 
         if (patient != null) {

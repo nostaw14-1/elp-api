@@ -1,7 +1,9 @@
 package com.elpdeliveries.api.client;
 
-import com.elpdeliveries.api.config.VroomProperties;
 import com.elpdeliveries.api.entity.Delivery;
+import com.elpdeliveries.api.entity.Settings;
+import com.elpdeliveries.api.service.SettingsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
@@ -11,25 +13,24 @@ import java.net.http.HttpResponse;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class VroomClient {
-
-    private final VroomProperties properties;
+    private final SettingsService settingsService;
     private final HttpClient client = HttpClient.newHttpClient();
-    public VroomClient(VroomProperties properties) {
-        this.properties = properties;
-    }
 
     public List<Integer> optimiseRoute(List<Delivery> deliveries) throws Exception {
+        Settings settings = settingsService.getSettings();
         if (deliveries.isEmpty()) {
             throw new RuntimeException("No deliveries to order!");
         }
-        String requestJson = VroomJsonUtil.buildRequest(deliveries, properties.getLatitude(), properties.getLongitude());
+        String requestJson = VroomJsonUtil.buildRequest(deliveries, settings.getDepotLat(), settings.getDepotLong());
         String responseJson = postToVroom(requestJson);
         return VroomJsonUtil.parse(responseJson);
     }
 
     private String postToVroom(String requestJson) throws Exception {
-        String VROOM_URL = properties.getUrl();
+        Settings settings = settingsService.getSettings();
+        String VROOM_URL = "http://" + settings.getVroomIp() + ":3000";
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(VROOM_URL))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(requestJson)).build();

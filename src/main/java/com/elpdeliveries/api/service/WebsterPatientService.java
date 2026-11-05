@@ -1,21 +1,29 @@
 package com.elpdeliveries.api.service;
 
 import com.elpdeliveries.api.dto.PatientLookupDto;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.core.JdbcTemplate;
+import com.elpdeliveries.api.entity.Settings;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.sql.*;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class WebsterPatientService {
-    private final JdbcTemplate webstercareJdbcTemplate;
+    private final SettingsService settingsService;
 
-    public WebsterPatientService(@Qualifier("WebstercareJdbcTemplate") JdbcTemplate jdbcTemplate) {
-        this.webstercareJdbcTemplate = jdbcTemplate;
+    private Connection createConnection() throws SQLException {
+        Settings settings = settingsService.getSettings();
+        String url = "jdbc:sqlserver://"+ settings.getSqlServer() +":50526;databaseName=WEBSTERCARE;encrypt=true;trustServerCertificate=true;";
+        return DriverManager.getConnection(
+                url,
+                settings.getSqlUsername(),
+                settings.getSqlPassword()
+        );
     }
 
-    public PatientLookupDto getReceipt(String barcode) {
+    public PatientLookupDto getReceipt(String barcode) throws SQLException{
         String sql = """
                 SELECT
                     pd.barcode_128,
@@ -31,17 +39,27 @@ public class WebsterPatientService {
                                     ON m.patientid = pt.patientid
                 WHERE pd.barcode_128 = ?;
                 """;
-        List<PatientLookupDto> matches = webstercareJdbcTemplate.query(sql, (rs, rowNum) -> {
-            PatientLookupDto dto = new PatientLookupDto();
-            dto.setFirstName(rs.getString("patfirstname"));
-            dto.setSurname(rs.getString("patsurname"));
-            dto.setHomeAddress(rs.getString("pataddress1"));
-            dto.setHomeSuburb(rs.getString("pataddress2"));
-            dto.setPhoneNumber(rs.getString("phone"));
-            dto.setSource("Webstercare");
-            dto.setItems(List.of());
-            return dto;
-        }, barcode);
-        return matches.isEmpty() ? null : matches.get(0);
+        try (Connection conn = createConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, barcode);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    return null;
+                }
+                return mapPatient(rs);
+            }
+        }
+    }
+
+    private PatientLookupDto mapPatient(ResultSet rs) throws SQLException {
+        PatientLookupDto dto = new PatientLookupDto();
+        dto.setFirstName(rs.getString("patfirstname"));
+        dto.setSurname(rs.getString("patsurname"));
+        dto.setHomeAddress(rs.getString("pataddress1"));
+        dto.setHomeSuburb(rs.getString("pataddress2"));
+        dto.setPhoneNumber(rs.getString("phone"));
+        dto.setSource("Webstercare");
+        dto.setItems(List.of());
+        return dto;
     }
 }

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -19,13 +20,14 @@ public class PatientsController {
 
     @GetMapping("/search")
     public ResponseEntity<List<PatientDto>> searchPatients(@RequestParam(required = false) String firstName,
-                                                           @RequestParam(required = false) String surname) {
+                                                           @RequestParam(required = false) String surname)
+                                            throws SQLException {
         List<PatientDto> patients = service.searchPatients(firstName, surname);
         return ResponseEntity.ok(patients);
     }
 
     @GetMapping("/receipt/{receiptId}")
-    public ResponseEntity<PatientLookupDto> getReceipt(@PathVariable String receiptId) {
+    public ResponseEntity<PatientLookupDto> getReceipt(@PathVariable String receiptId) throws Exception {
         PatientLookupDto receipt = patientService.getReceipt(receiptId);
         if (receipt == null) {
             return ResponseEntity.notFound().build();

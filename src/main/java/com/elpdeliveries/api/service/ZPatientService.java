@@ -3,54 +3,53 @@ package com.elpdeliveries.api.service;
 import com.elpdeliveries.api.dto.PatientDto;
 import com.elpdeliveries.api.dto.PatientLookupDto;
 import com.elpdeliveries.api.dto.ReceiptItemDto;
-import com.elpdeliveries.api.repository.PatientRepository;
+import com.elpdeliveries.api.entity.ReceiptRow;
+import com.elpdeliveries.api.repository.ZPatientRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class ZPatientService {
-    private final PatientRepository repository;
-    public ZPatientService(PatientRepository repository) {
-        this.repository = repository;
-    }
+    private final ZPatientRepository repository;
 
-    public PatientLookupDto getReceipt(String receiptId) {
-        List<Map<String, Object>> rows = repository.findReceiptRows(receiptId);
+
+    public PatientLookupDto getReceipt(String receiptId) throws SQLException {
+        List<ReceiptRow> rows = repository.findReceiptRows(receiptId);
 
         if (rows.isEmpty()) {
             return null;
         }
 
-        Map<String, Object> first = rows.get(0);
+        ReceiptRow first = rows.get(0);
 
         PatientLookupDto response = new PatientLookupDto();
-        response.setFirstName((String) first.get("FirstName"));
-        response.setSurname((String) first.get("Surname"));
-        response.setHomeAddress((String) first.get("HomeAddress"));
-        response.setHomeSuburb((String) first.get("HomeSuburb"));
-        response.setPhoneNumber((String) first.get("PhoneNumber"));
-        response.setMobileNumber((String) first.get("MobileNumber"));
+        response.setFirstName(first.firstName());
+        response.setSurname(first.surname());
+        response.setHomeAddress(first.homeAddress());
+        response.setHomeSuburb(first.homeSuburb());
+        response.setPhoneNumber(first.phoneNumber());
+        response.setMobileNumber(first.mobileNumber());
         response.setSource("Z");
 
         List<ReceiptItemDto> items = new ArrayList<>();
 
-        for (Map<String, Object> row : rows) {
+        for (ReceiptRow row : rows) {
             ReceiptItemDto item = new ReceiptItemDto();
-            item.setDescription((String) row.get("Description"));
-            item.setQty(((Number) row.get("Qty")).intValue());
-            item.setSellPrice((BigDecimal) row.get("SellPrice"));
+            item.setDescription(row.description());
+            item.setQty(row.qty());
+            item.setSellPrice(row.sellPrice());
             items.add(item);
         }
-
         response.setItems(items);
         return response;
     }
 
-    public List<PatientDto> searchPatients(String firstName, String surname) {
+    public List<PatientDto> searchPatients(String firstName, String surname) throws SQLException {
         if (firstName == null && surname == null) {
             throw new RuntimeException("Please input search params");
         }
