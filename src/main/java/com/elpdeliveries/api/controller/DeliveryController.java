@@ -49,7 +49,7 @@ public class DeliveryController {
             @RequestParam(required = false) LocalDate dlvDate,
             @RequestParam(required = false) String firstName,
             @RequestParam(required = false) String lastName,
-            @RequestParam(required = false) Integer receiptId,
+            @RequestParam(required = false) String receiptId,
             @RequestParam(required = false) Boolean completed) {
 
         return service.searchDeliveries(

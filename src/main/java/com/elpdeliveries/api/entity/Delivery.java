@@ -30,6 +30,7 @@ public class Delivery {
     private Boolean handedToCustomer;
     private Double latitude;
     private Double longitude;
+    @Transient
     private Integer routeOrder;
     private Boolean includedInRoute;
 

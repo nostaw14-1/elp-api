@@ -33,10 +33,11 @@ public class DeliverySpecification {
                 );
     }
 
-    public static Specification<Delivery> hasReceiptId(Integer receiptId) {
+    public static Specification<Delivery> hasReceiptId(String receiptId) {
         return (root, query, cb) ->
                 receiptId == null
                         ? null
+
                         : cb.equal(root.get("receiptId"), receiptId);
     }
 
@@ -56,7 +57,6 @@ public class DeliverySpecification {
                 case ALL -> null;
                 case TODAY -> cb.equal(root.get("dlvDate"), LocalDate.now());
                 case FUTURE -> cb.greaterThan(root.get("dlvDate"), LocalDate.now());
-                case ROUTED -> cb.isNotNull(root.get("routeOrder"));
             };
         };
     }

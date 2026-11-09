@@ -62,7 +62,6 @@ public class DeliveryService {
         existing.setIncludedInRoute(updated.getIncludedInRoute());
         existing.setLatitude(updated.getLatitude());
         existing.setLongitude(updated.getLongitude());
-        existing.setRouteOrder(updated.getRouteOrder());
         existing.setDlvDate(updated.getDlvDate());
         existing.setIncludedInRoute(updated.getIncludedInRoute());
 
@@ -82,7 +81,7 @@ public class DeliveryService {
             LocalDate dlvDate,
             String firstName,
             String surname,
-            Integer receiptId,
+            String receiptId,
             Boolean completed
     ) {
        Specification<Delivery> spec = Specification.allOf(
@@ -106,6 +105,8 @@ public class DeliveryService {
              repository.countByCompletedFalse()
         );
     }
+
+
 
 
 }

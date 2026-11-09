@@ -13,10 +13,6 @@ import java.time.LocalDate;
 
 @Repository
 public interface DeliveryRepository extends JpaRepository<Delivery, Integer>, JpaSpecificationExecutor<Delivery> {
-    @Modifying
-    @Transactional
-    @Query("UPDATE Delivery d SET d.routeOrder = null")
-    void clearRouteOrders();
 
     @Modifying
     @Transactional

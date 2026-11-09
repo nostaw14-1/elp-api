@@ -1,6 +1,7 @@
 package com.elpdeliveries.api.repository;
 
 import com.elpdeliveries.api.dto.PatientDto;
+import com.elpdeliveries.api.dto.StaffDto;
 import com.elpdeliveries.api.entity.ReceiptRow;
 import com.elpdeliveries.api.entity.Settings;
 import com.elpdeliveries.api.service.SettingsService;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class ZPatientRepository {
+public class ZRepository {
     private final SettingsService settingsService;
     private Connection createConnection() throws SQLException {
         Settings settings = settingsService.getSettings();
@@ -113,6 +114,52 @@ public class ZPatientRepository {
             }
         }
         return rows;
+    }
+
+    public List<StaffDto> getAllStaff() throws SQLException {
+        String sql = """
+                SELECT ID, FirstName, Surname
+                FROM Staff WHERE Status = 'A'
+                ORDER BY Created DESC
+                """;
+        List<StaffDto> result = new ArrayList<>();
+        try (Connection conn = createConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                result.add(
+                        new StaffDto(
+                                rs.getString("ID"),
+                                rs.getString("FirstName"),
+                                rs.getString("Surname")
+                        )
+                );
+            }
+        }
+        return result;
+    }
+
+    public StaffDto getStaffById(String staffId) throws SQLException {
+        String sql = """
+                SELECT ID, FirstName, Surname
+                FROM Staff WHERE ID = ?
+                ORDER BY Created DESC
+                """;
+        StaffDto result = null;
+        try (Connection conn = createConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, staffId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                result = new StaffDto(
+                        rs.getString("ID"),
+                        rs.getString("FirstName"),
+                        rs.getString("Surname")
+                );
+            }
+        }
+        return result;
     }
 
 }

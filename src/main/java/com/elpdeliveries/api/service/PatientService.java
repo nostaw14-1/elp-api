@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class PatientService {
-    private final ZPatientService zPatientService;
+    private final ZService zService;
     private final WebsterPatientService websterPatientService;
 
     public PatientLookupDto getReceipt(String receiptId) throws Exception {
-        PatientLookupDto patient = zPatientService.getReceipt(receiptId);
+        PatientLookupDto patient = zService.getReceipt(receiptId);
 
         if (patient != null) {
             return patient;
